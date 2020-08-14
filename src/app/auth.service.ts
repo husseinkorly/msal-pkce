@@ -11,7 +11,6 @@ export class AuthService {
   private msalInstance: msal.PublicClientApplication;
   accountInfo: msal.AccountInfo;
   accessToken: string;
-  request: msal.SilentRequest;
 
   constructor() {
     this.msalInstance = new msal.PublicClientApplication(msalConfig);
@@ -20,12 +19,12 @@ export class AuthService {
   }
 
   login(): void {
-    var loginRequest = {
-      scopes: [''],
+    let loginRequest = {
+      scopes: [],
     };
     try {
       //this.msalInstance.loginRedirect({} as msal.RedirectRequest);
-      this.msalInstance.loginPopup(loginRequest);
+      this.msalInstance.loginPopup();
     } catch (err) {}
   }
 
@@ -48,23 +47,23 @@ export class AuthService {
       });
   }
 
-  acquireToken(): void {
-    this.request = {
+  async acquireToken(): Promise<void> {
+    var request = {
       scopes: [
-        ''
+        '',
       ],
       account: this.accountInfo,
-      forceRefresh: false
+      forceRefresh: false,
     };
 
-    this.msalInstance
-      .acquireTokenSilent(this.request)
+    await this.msalInstance
+      .acquireTokenSilent(request)
       .then((tokenResponse) => {
         this.accessToken = tokenResponse.accessToken;
       })
       .catch(async (err) => {
         if (err instanceof msal.InteractionRequiredAuthError) {
-          return this.msalInstance.acquireTokenPopup(this.request);
+          return this.msalInstance.acquireTokenPopup(request);
         }
       })
       .catch((err) => {
