@@ -19,8 +19,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  acquireAccessToken(): string {
-    this.authService.acquireToken();
+  async acquireAccessToken(): Promise<string> {
+    await this.authService.acquireToken();
     this.accesstoken = this.authService.accessToken;
 
     return this.accesstoken;

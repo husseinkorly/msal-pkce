@@ -9,7 +9,17 @@ export const environment = {
   msal_config: {
     auth: {
       clientId: '',
-      // authority: 'https://login.microsoftonline.com/{your_tenant_id}',
+      /*
+      You need specify the TenantId only if you want to accept access tokens from a single tenant
+      (line-of-business app).
+      Otherwise, you can leave them set to common.
+      This can be:
+      - A GUID (Tenant ID = Directory ID)
+      - 'common' (any organization and personal accounts)
+      - 'organizations' (any organization)
+      - 'consumers' (Microsoft personal accounts)
+    */
+      //authority: 'https://login.microsoftonline.com/common',
     },
     cache: {
       cacheLocation: 'localStorage',
