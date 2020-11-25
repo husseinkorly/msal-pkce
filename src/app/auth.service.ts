@@ -14,18 +14,23 @@ export class AuthService {
 
   constructor() {
     this.msalInstance = new msal.PublicClientApplication(msalConfig);
-    this.accountInfo = null;
-    this.accessToken = '';
   }
 
   login(): void {
+    // optional for login. scopes can be defined for pre-consent
     let loginRequest = {
-      scopes: [],
+      scopes: [
+        // 'https://test.invoice.microsoft.com/Invoice.Read',
+        // 'https://test.invoice.microsoft.com/Invoice.Write',
+        // 'api://144ee3fb-bdfd-49be-bebe-bdc3f49d05d7/dummy.read'
+      ],
     };
+
     try {
-      //this.msalInstance.loginRedirect({} as msal.RedirectRequest);
-      this.msalInstance.loginPopup();
-    } catch (err) {}
+      this.msalInstance.loginRedirect();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   getAccounts(): msal.AccountInfo[] {
@@ -47,27 +52,28 @@ export class AuthService {
       });
   }
 
-  async acquireToken(): Promise<void> {
-    var request = {
+  public acquireToken(): Promise<void | msal.AuthenticationResult> {
+    const request = {
       scopes: [
-        '',
+        'https://test.invoice.microsoft.com/Invoice.Read',
+        'https://test.invoice.microsoft.com/Invoice.Write',
       ],
       account: this.accountInfo,
       forceRefresh: false,
     };
 
-    await this.msalInstance
+    return this.msalInstance
       .acquireTokenSilent(request)
-      .then((tokenResponse) => {
-        this.accessToken = tokenResponse.accessToken;
+      .then((response) => {
+        return response;
       })
-      .catch(async (err) => {
-        if (err instanceof msal.InteractionRequiredAuthError) {
-          return this.msalInstance.acquireTokenPopup(request);
+      .catch(async (error) => {
+        if (error instanceof msal.InteractionRequiredAuthError) {
+          this.msalInstance.acquireTokenPopup(request);
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.log();
       });
   }
 }

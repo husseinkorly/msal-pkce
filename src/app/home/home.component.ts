@@ -19,10 +19,14 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  async acquireAccessToken(): Promise<string> {
-    await this.authService.acquireToken();
-    this.accesstoken = this.authService.accessToken;
+  acquireAccessToken(): void {
+    this.authService.acquireToken()
+    .then((resp: any) => {
+      this.accesstoken = resp.accessToken;
+    });
+    // await this.authService.acquireToken();
+    // this.accesstoken = this.authService.accessToken;
 
-    return this.accesstoken;
+    // return this.accesstoken;
   }
 }

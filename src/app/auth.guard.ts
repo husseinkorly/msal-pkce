@@ -3,7 +3,6 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  UrlTree,
 } from '@angular/router';
 import { AuthService } from './auth.service';
 
