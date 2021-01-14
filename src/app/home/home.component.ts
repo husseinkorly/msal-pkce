@@ -14,9 +14,13 @@ export class HomeComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    if (this.authService.accountInfo) {
-      this.username = this.authService.accountInfo.username;
-    }
+    // this.authService.handleRedirect().subscribe({
+    //   next: (resp) => console.log(resp)
+    // }).unsubscribe();
+    // if (this.authService.accountInfo) {
+    //   this.username = this.authService.accountInfo.username;
+    // }
+    this.authService.handleRedirect();
   }
 
   acquireAccessToken(): void {

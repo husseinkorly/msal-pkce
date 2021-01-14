@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import * as msal from '@azure/msal-browser';
 import { environment } from 'src/environments/environment';
 
+import { from, Observable, of } from 'rxjs';
+
 const msalConfig = environment.msal_config;
 
 @Injectable({
@@ -20,17 +22,16 @@ export class AuthService {
     // optional for login. scopes can be defined for pre-consent
     let loginRequest = {
       scopes: [
-        // 'https://test.invoice.microsoft.com/Invoice.Read',
-        // 'https://test.invoice.microsoft.com/Invoice.Write',
         // 'api://144ee3fb-bdfd-49be-bebe-bdc3f49d05d7/dummy.read'
       ],
     };
+    this.msalInstance.loginRedirect();
 
-    try {
-      this.msalInstance.loginRedirect();
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   this.msalInstance.loginRedirect();
+    // } catch (err) {
+    //   console.log(err);
+    // }
   }
 
   getAccounts(): msal.AccountInfo[] {
@@ -38,10 +39,14 @@ export class AuthService {
   }
 
   handleRedirect(): void {
+    // return from(
+    //   this.msalInstance.handleRedirectPromise()
+    // );
     this.msalInstance
       .handleRedirectPromise()
       .then((tokenResponse) => {
         if (tokenResponse !== null) {
+          console.log('token response: ', tokenResponse);
           this.accountInfo = tokenResponse.account;
         } else {
           this.accountInfo = this.getAccounts()[0];
@@ -55,8 +60,7 @@ export class AuthService {
   public acquireToken(): Promise<void | msal.AuthenticationResult> {
     const request = {
       scopes: [
-        'https://test.invoice.microsoft.com/Invoice.Read',
-        'https://test.invoice.microsoft.com/Invoice.Write',
+        'api://9dc892b6-024d-4840-a6f8-0285f376e688/access_as_user'
       ],
       account: this.accountInfo,
       forceRefresh: false,
